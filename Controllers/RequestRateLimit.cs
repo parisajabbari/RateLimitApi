@@ -17,28 +17,35 @@ namespace TodoApi.Controllers
         public string Name{get; set;}
         public int Seconds{get; set;}
 
-        private static MemoryCache Cache { get; } = new MemoryCache(new MemoryCacheOptions());     
+        private static MemoryCache Cache { get; } = new MemoryCache(new MemoryCacheOptions());
+        static int RequestCounter = 0;   
     
-
         //OnActionExecuting method : Called before the action executes, after model binding is complete.
         //https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.filters.iactionfilter.onactionexecuting?view=aspnetcore-3.1#Microsoft_AspNetCore_Mvc_Filters_IActionFilter_OnActionExecuting_Microsoft_AspNetCore_Mvc_Filters_ActionExecutingContext_
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var ipAddress = context.HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             var MemoryCacheKey = $"{Name}--{ipAddress}";
-
+           
             //Gets the item associated with this key if present.
             if(!Cache.TryGetValue(MemoryCacheKey, out bool entry))
             {
                 //set and entry option with expiration time on memory cache 
                 var CacheEntryOption = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(Seconds));
-                Cache.Set(MemoryCacheKey, true, CacheEntryOption);           
+                Cache.Set(MemoryCacheKey, true, CacheEntryOption); 
+
+                RequestCounter++;
             }
             else
             {
+                RequestCounter++;
+            }
+
+            if( RequestCounter > 5 )
+            {
                 context.Result = new ContentResult
                 {
-                    Content = $"Requests are limited to 1, every {Seconds} seconds.",
+                    Content = $"Requests are limited to 5, every {Seconds} seconds.",
                 };
 
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;

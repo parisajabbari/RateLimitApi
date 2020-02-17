@@ -66,7 +66,7 @@ namespace TodoApi.Controllers
 
         // POST: api/TodoItems
         [HttpPost]
-        [RequestRateLimit(Name = "Limit Request Number", Seconds = 5)]
+        [RequestRateLimit(Name = "Limit Request Number", Seconds = 30)]
         public async Task<ActionResult<TodoItem>> PostTodoItem(TodoItem todoItem)
         {
             _context.TodoItems.Add(todoItem);
