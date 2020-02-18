@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace TodoApi.Controllers
+
+namespace TodoApi.Attributes
 {
     
     [AttributeUsage(AttributeTargets.Method)]
@@ -18,22 +19,25 @@ namespace TodoApi.Controllers
         public int Seconds{get; set;}
 
         private static MemoryCache Cache { get; } = new MemoryCache(new MemoryCacheOptions());
-        static int RequestCounter = 0;   
+        int RequestCounter = 0; 
     
         //OnActionExecuting method : Called before the action executes, after model binding is complete.
         //https://docs.microsoft.com/en-us/dotnet/api/microsoft.aspnetcore.mvc.filters.iactionfilter.onactionexecuting?view=aspnetcore-3.1#Microsoft_AspNetCore_Mvc_Filters_IActionFilter_OnActionExecuting_Microsoft_AspNetCore_Mvc_Filters_ActionExecutingContext_
         public override void OnActionExecuting(ActionExecutingContext context)
-        {
+        {            
             var ipAddress = context.HttpContext.Request.HttpContext.Connection.RemoteIpAddress;
             var MemoryCacheKey = $"{Name}--{ipAddress}";
            
             //Gets the item associated with this key if present.
             if(!Cache.TryGetValue(MemoryCacheKey, out bool entry))
-            {
+            {    
+                RequestCounter = 0;
+                
                 //set and entry option with expiration time on memory cache 
                 var CacheEntryOption = new MemoryCacheEntryOptions().SetAbsoluteExpiration(TimeSpan.FromSeconds(Seconds));
-                Cache.Set(MemoryCacheKey, true, CacheEntryOption); 
+                Cache.Set(MemoryCacheKey, true, CacheEntryOption);
 
+                //Add first request 
                 RequestCounter++;
             }
             else
@@ -41,7 +45,7 @@ namespace TodoApi.Controllers
                 RequestCounter++;
             }
 
-            if( RequestCounter > 5 )
+            if( RequestCounter > 5 ) 
             {
                 context.Result = new ContentResult
                 {
@@ -49,8 +53,8 @@ namespace TodoApi.Controllers
                 };
 
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
+                
             }
-
         }
-    }
+}
 }
