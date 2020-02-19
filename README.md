@@ -9,7 +9,7 @@ For now it has been set to 100 requests per 1 hour (3600 seconds).
 As long as the requests have not hit the threashold, server will respond back with 201 created which means you have created a record.
 There is as well a counter to count requests. When requests exceed the number, server responses with 429 too many requests and a message will be shown.
 
-Api is integrated in a simple “Todo items” CRUD Api and is checking the HttpPost method in there.
+Api is integrated in a simple “Todo items” web Api and is checking the HttpPost method in there.
 The Api could be tested with Postman application in this way :
 
  ![Postman](https://user-images.githubusercontent.com/59807156/74812818-434b9900-5348-11ea-9273-1b1d034c0b6c.jpg)
