@@ -41,11 +41,11 @@ namespace TodoApi.Attributes
                 RequestCounter++;
             }
 
-            if( RequestCounter > 5 ) 
+            if( RequestCounter > 100 ) 
             {
                 context.Result = new ContentResult
                 {
-                    Content = $"Requests are limited to 5, every {Seconds} seconds.",
+                    Content = $"Requests are limited to 100, every {Seconds} seconds.",
                 };
 
                 context.HttpContext.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
