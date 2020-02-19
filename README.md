@@ -12,5 +12,6 @@ There is as well a counter to count requests. When requests exceed the number, s
 Api is integrated in a simple “Todo items” CRUD Api and is checking the HttpPost method in there.
 The Api could be tested with Postman application in this way :
 
+ ![Postman](https://user-images.githubusercontent.com/59807156/74812818-434b9900-5348-11ea-9273-1b1d034c0b6c.jpg)
  
 For testing purpose you can change the number of requests and the time frame.
